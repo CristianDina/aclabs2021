@@ -25,12 +25,13 @@ SECRET_KEY = '0y=hnng--9r49b2ft9ygbfxb%8&++khb&8(!_rfsesh9#quww2'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0', '*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'graphene_django',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,6 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'todo'
 ]
+
+GRAPHENE = {
+    'SCHEMA': 'todo.schema.schema'
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

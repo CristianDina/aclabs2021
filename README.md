@@ -1,4 +1,4 @@
-# AC Labs 2020 - Lab 6
+# AC Labs 2020 - Lab 7
 
 This repo will contain:
  - Docker file for python 3.7
@@ -8,8 +8,8 @@ This repo will contain:
 
 Build image:
 
-`docker build . --tag lab6`
+`docker build . --tag lab7`
 
 Run image:
 
-`docker run -it -v "$(pwd)":/app --rm lab6`
+`docker run -it -v "$(pwd)":/app -p 8000:8000 --rm lab7`
