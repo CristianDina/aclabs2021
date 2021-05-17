@@ -12,29 +12,6 @@ class TodoType(DjangoObjectType):
     class Meta:
         model = Todo
 
-class TodoMutation(graphene.Mutation):
-    class Arguments:
-        id = graphene.Int(required=True)
-        text = graphene.String()
-        priority = graphene.String()
-        dueDate = graphene.String()
-        completed = graphene.Boolean()
-
-    todo = graphene.Field(TodoType)
-
-    def mutate(self, info, id, text=None, priority=None, dueDate=None, completed=False):
-        todo = Todo.objects.get(pk=id)
-        if text is not None:
-            todo.text = text
-        if priority:
-            todo.priority = priority
-        if dueDate:
-            todo.due_date = datetime.datetime.fromisoformat(dueDate)
-        todo.completed = completed
-        todo.save()
-        return TodoMutation(todo=todo)
-
-
 class AddTodoInput(graphene.InputObjectType):
     # all fields are optional
     text = graphene.String()
@@ -57,9 +34,34 @@ class AddTodoMutation(graphene.Mutation):
         return AddTodoMutation(todo=new_todo)
 
 
+class TodoMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.Int(required=True)
+        text = graphene.String()
+        priority = graphene.String()
+        dueDate = graphene.String()
+        completed = graphene.Boolean()
+
+    todo = graphene.Field(TodoType)
+
+    def mutate(self, info, id, text=None, priority=None, dueDate=None, completed=False):
+        todo = Todo.objects.get(pk=id)
+        if text is not None:
+            todo.text = text
+        if priority:
+            todo.priority = priority
+        if dueDate:
+            todo.due_date = datetime.datetime.fromisoformat(dueDate)
+        if completed:
+            todo.completed = completed
+        todo.save()
+        return TodoMutation(todo=todo)
+
+
 class Mutation(graphene.ObjectType):
     edit_todo = TodoMutation.Field()
     add_todo = AddTodoMutation.Field()
+    # delete = DeleteToDoMutation.Field()
 
 
 class Query(graphene.ObjectType):
