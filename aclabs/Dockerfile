@@ -6,6 +6,8 @@ RUN mkdir /app
 ADD . /app
 WORKDIR /app/aclabs
 
+EXPOSE 8000
+
 RUN pip install Django==3.1
 RUN pip install graphene_django==2.8.2
 
