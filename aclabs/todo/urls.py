@@ -8,10 +8,9 @@ from . import views
 
 
 urlpatterns = [
-    path('todos', views.todo_list, name="todo-list"),
-    path('todos/<int:todo_id>', views.todo_interaction, name="todo-interaction"),
+    path('', views.index, name="index"),
 
     # GraphQL routes
-    path('graphqlapi/', GraphQLView.as_view(graphiql=True)),
-    path('graphql/', GraphQLView.as_view(graphiql=False)),
+    path('graphqlapi/', csrf_exempt(GraphQLView.as_view(graphiql=True))),
+    path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=False))),
 ]

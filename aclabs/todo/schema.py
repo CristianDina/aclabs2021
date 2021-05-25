@@ -1,8 +1,6 @@
 import datetime
 
-from django.db.models import Q
 import graphene
-from graphene import ObjectType
 from graphene_django.types import DjangoObjectType
 
 from todo.models import Todo
@@ -12,31 +10,10 @@ class TodoType(DjangoObjectType):
     class Meta:
         model = Todo
 
-class AddTodoInput(graphene.InputObjectType):
-    # all fields are optional
-    text = graphene.String()
-    priority = graphene.String()
-    dueDate = graphene.String()
-    completed = graphene.Boolean()
 
-
-class AddTodoMutation(graphene.Mutation):
+class EditTodoMutation(graphene.Mutation):
     class Arguments:
-        todo = AddTodoInput(required=True)
-
-    todo = graphene.Field(TodoType)
-
-    def mutate(self, info, todo):
-        new_todo = Todo.objects.create(
-            text=todo.text,
-            priority=todo.priority or "LOW"
-        )
-        return AddTodoMutation(todo=new_todo)
-
-
-class TodoMutation(graphene.Mutation):
-    class Arguments:
-        id = graphene.Int(required=True)
+        id = graphene.String(required=True)
         text = graphene.String()
         priority = graphene.String()
         dueDate = graphene.String()
@@ -55,13 +32,58 @@ class TodoMutation(graphene.Mutation):
         if completed:
             todo.completed = completed
         todo.save()
-        return TodoMutation(todo=todo)
+        return EditTodoMutation(todo=todo)
+
+
+class AddTodoInput(graphene.InputObjectType):
+    # all fields are optional
+    text = graphene.String()
+    priority = graphene.String()
+    dueDate = graphene.String()
+    completed = graphene.Boolean()
+
+
+class AddTodoMutation(graphene.Mutation):
+    class Arguments:
+        todo = AddTodoInput(required=True)
+
+    todo = graphene.Field(TodoType)
+
+    def mutate(self, info, todo):
+        # Added all fields here
+        due_date = None
+        completed = False
+        if todo.dueDate:
+            due_date = datetime.datetime.fromisoformat(todo.dueDate)
+        if todo.completed is True:
+            completed = True
+        new_todo = Todo.objects.create(
+            text=todo.text,
+            priority=todo.priority or "LOW",
+            due_date=due_date,
+            completed=completed
+        )
+        return AddTodoMutation(todo=new_todo)
+
+
+class DeleteTodoMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.String(required=True)
+
+    id = graphene.Int(required=True)
+    ok = graphene.Boolean()
+
+    def mutate(self, info, **kwargs):
+        todo = Todo.objects.filter(pk=kwargs.get("id")).first()
+        count, _ = todo.delete()
+        deleted = True if count == 1 else False
+        return DeleteTodoMutation(ok=deleted)
 
 
 class Mutation(graphene.ObjectType):
-    edit_todo = TodoMutation.Field()
+    edit_todo = EditTodoMutation.Field()
     add_todo = AddTodoMutation.Field()
-    # delete = DeleteToDoMutation.Field()
+    delete_todo = DeleteTodoMutation.Field()
 
 
 class Query(graphene.ObjectType):
@@ -69,7 +91,7 @@ class Query(graphene.ObjectType):
     todo = graphene.Field(
         TodoType,
         id=graphene.Int(),
-        name=graphene.String()
+        text=graphene.String()
     )
 
     def resolve_all_todos(self, info, **kwargs):
