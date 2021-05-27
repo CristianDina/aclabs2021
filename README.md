@@ -19,8 +19,6 @@ Only the `backend` container is needed for the former option, while the latter w
 
 ## How to run from single docker container
 
-Set the correct environment variables for the RDS created DB in Dockerfile, then:
-
 ```docker build . --tag aclabs``` 
 
 ```docker run -it -v $(pwd):/app -p 8000:8000 --rm aclabs```

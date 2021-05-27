@@ -19,10 +19,10 @@ ADD . /app
 WORKDIR /app
 
 ENV DB_ENGINE=django.db.backends.mysql
-ENV DB_NAME=<your-db-name-here>
-ENV DB_USER=<your-user-here>
-ENV DB_PASSWORD=<your-password-here>
-ENV DB_HOST=<your.host.here.com>
+ENV DB_NAME=aclabs2021
+ENV DB_USER=admin
+ENV DB_PASSWORD=aclabs2021
+ENV DB_HOST=aclabs2021.cjqfojqhy72c.eu-west-1.rds.amazonaws.com
 ENV DB_PORT=3306
 
 CMD [ "configuration/entrypoint.sh" ]
