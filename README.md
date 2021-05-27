@@ -1,4 +1,4 @@
-# AC Labs 2021 - Lab 8
+# AC Labs 2021 - Lab 9
 
 This repo will contain:
  - A Django project containing a ToDo model
@@ -16,3 +16,12 @@ Use `docker-compose up frontend` to only launch the frontend container.
 
 The frontend can be served by either the Django backend, on `localhost:8000`, or the React app on `localhost:3000`.
 Only the `backend` container is needed for the former option, while the latter will require both.
+
+## How to run from single docker container
+
+Set the correct environment variables for the RDS created DB in Dockerfile, then:
+
+```docker build . --tag aclabs``` 
+
+```docker run -it -v $(pwd):/app -p 8000:8000 --rm aclabs```
+
